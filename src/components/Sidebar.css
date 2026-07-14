@@ -118,6 +118,24 @@
   color: #ffffff;
 }
 
+.sidebar-icon {
+  filter: brightness(0) invert(1);
+  transition: opacity 0.2s ease-in-out;
+}
+
+.inactive-icon {
+  opacity: 0.65;
+}
+
+.active-icon {
+  opacity: 1;
+}
+
+.menu-item:hover .inactive-icon {
+  opacity: 1;
+}
+
+
 @media (max-width: 600px) {
   .sidebar {
     position: fixed;

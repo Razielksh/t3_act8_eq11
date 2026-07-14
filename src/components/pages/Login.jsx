@@ -73,7 +73,6 @@ export default function Login({ onLogin }) {
                     setErrors(prev => ({ ...prev, password: '' }));
                   }}
                 />
-
               </div>
               {errors.password && <p className="field-error">{errors.password}</p>}
             </div>
