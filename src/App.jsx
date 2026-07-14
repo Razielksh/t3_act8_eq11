@@ -7,13 +7,25 @@ import Login from './components/pages/Login';
 import './App.css';
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const guardado = localStorage.getItem('user');
+    return guardado ? JSON.parse(guardado) : null;
+  });
   const [currentPage, setCurrentPage] = useState('inicio');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
+    const handleLogin = (data) => {
+      localStorage.setItem('user', JSON.stringify(data));
+      setCurrentUser(data);
+    }
+
+    const handleLogout = () => {
+      localStorage.removeItem('user');
+      setCurrentUser(null);
+    }
   // Mostrar Login si no hay usuario logueado
   if (!currentUser) {
-    return <Login onLogin={setCurrentUser} />;
+    return <Login onLogin={handleLogin} />;
   }
 
   return (
@@ -29,7 +41,7 @@ export default function App() {
         <Navbar
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
           currentUser={currentUser}
-          onLogout={() => setCurrentUser(null)}
+          onLogout={handleLogout}
         />
 
         <main className="main-content">
