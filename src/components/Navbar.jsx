@@ -1,0 +1,67 @@
+import React, { useState } from 'react';
+import './Navbar.css';
+
+export default function Navbar({ onToggleSidebar, currentUser, onLogout }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleLogout = () => {
+    setDropdownOpen(false);
+    onLogout();
+  };
+
+  const displayName = currentUser
+    ? `${currentUser.firstName} ${currentUser.lastName}`
+    : 'Usuario';
+
+  const profileImage = currentUser?.image || null;
+
+  return (
+    <header className="navbar">
+      <div className="navbar-left">
+        <button className="menu-toggle-btn" onClick={onToggleSidebar} aria-label="Colapsar/Mostrar menú lateral">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div className="navbar-right">
+        <div className="user-profile-wrapper">
+          <div className="user-pill" onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <div className="user-avatar-container">
+              {profileImage ? (
+                <img src={profileImage} alt="Foto de perfil" className="user-profile-pic" />
+              ) : (
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 6c-2.28 0-4 1.72-4 4s1.72 4 4 4 4-1.72 4-4-1.72-4-4-4m0 6c-1.18 0-2-.82-2-2s.82-2 2-2 2 .82 2 2-.82 2-2 2"></path>
+                  <path d="M12 2C6.49 2 2 6.49 2 12c0 3.26 1.58 6.16 4 7.98V20h.03c1.67 1.25 3.73 2 5.97 2s4.31-.75 5.97-2H18v-.02c2.42-1.83 4-4.72 4-7.98 0-5.51-4.49-10-10-10M8.18 19.02C8.59 17.85 9.69 17 11 17h2c1.31 0 2.42.85 2.82 2.02-1.14.62-2.44.98-3.82.98s-2.69-.35-3.82-.98m9.3-1.21c-.81-1.66-2.51-2.82-4.48-2.82h-2c-1.97 0-3.66 1.16-4.48 2.82A7.96 7.96 0 0 1 4 11.99c0-4.41 3.59-8 8-8s8 3.59 8 8c0 2.29-.97 4.36-2.52 5.82"></path>
+                </svg>
+              )}
+            </div>
+            <span className="user-name">{displayName}</span>
+            <div className="user-chevron" style={{ transform: dropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+          
+          {dropdownOpen && (
+            <div className="dropdown-menu">
+              <button className="logout-btn" onClick={handleLogout}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}

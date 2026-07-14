@@ -1,0 +1,136 @@
+.sidebar {
+  width: 240px;
+  background-color: #36151E;
+  color: #f5eff2;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, sans-serif;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: 72px;
+  padding: 24px 8px;
+}
+
+.sidebar-top {
+  margin-bottom: 60px;
+  display: flex;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #f5eff2;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s, transform 0.3s ease-in-out;
+}
+
+.back-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar.collapsed .back-btn {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-menu {
+  flex-grow: 1;
+}
+
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  color: #c9b9c2;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.menu-item:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.menu-item.active {
+  background-color: #553246;
+  color: #ffffff;
+}
+
+.sidebar.collapsed .menu-item {
+  justify-content: center;
+  padding: 12px;
+  gap: 0;
+}
+
+.menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.menu-text {
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.sidebar.collapsed .menu-text {
+  display: none;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+}
+
+.exit-item {
+  color: #c9b9c2;
+}
+
+.exit-item:hover {
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    border: none;
+  }
+}
