@@ -24,7 +24,9 @@ Para el consumo de datos y operaciones CRUD en la tabla, se seleccionó la sigui
 ---
 
 ## Enlace de Despliegue en VPS
-* **URL del proyecto:** [http://[TU_IP_DEL_VPS_O_DOMINIO]/] (Reemplazar con el enlace correspondiente del VPS)
+* **URL del proyecto:** [http://137.184.133.196/t3_act8_eq11/]
+
+* **URL del repositorio:** [https://github.com/Razielksh/t3_act8_eq11]
 
 ---
 
