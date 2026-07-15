@@ -24,7 +24,7 @@ Para el consumo de datos y operaciones CRUD en la tabla, se seleccionó la sigui
 ---
 
 ## Enlace de Despliegue en VPS
-* **URL del proyecto:** [http://137.184.133.196/t3_act8_eq11/]
+* **URL del proyecto:** [https://cvgenerador.xyz/t3_act8_eq11/]
 
 * **URL del repositorio:** [https://github.com/Razielksh/t3_act8_eq11]
 

@@ -49,7 +49,7 @@ export default function Login({ onLogin }) {
                 id="login-username"
                 type="text"
                 className={`login-input ${errors.username ? 'input-error' : ''}`}
-                placeholder="emilys"
+                placeholder="Usuario"
                 value={username}
                 onChange={(e) => {
                   setUsername(e.target.value);

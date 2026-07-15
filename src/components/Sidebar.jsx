@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
 
@@ -7,8 +7,20 @@ import homeIcon from '../assets/home.svg';
 import bookOpenIcon from '../assets/book-open.svg';
 
 export default function Sidebar({ collapsed, onToggle }) {
+  const sidebarRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!collapsed && sidebarRef.current && !sidebarRef.current.contains(e.target)) {
+        onToggle(); // colapsa el sidebar
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [collapsed]);
+
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`} ref={sidebarRef}>
       <div className="sidebar-top">
         <button className="back-btn" onClick={onToggle} aria-label="Ocultar/Mostrar menú lateral">
           <img

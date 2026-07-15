@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import menuWideIcon from '../assets/menu-wide.svg';
 import './Navbar.css';
 
@@ -16,6 +16,18 @@ export default function Navbar({ onToggleSidebar, currentUser, onLogout }) {
 
   const profileImage = currentUser?.image || null;
 
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <header className="navbar">
       <div className="navbar-left">
@@ -30,7 +42,7 @@ export default function Navbar({ onToggleSidebar, currentUser, onLogout }) {
       </div>
 
       <div className="navbar-right">
-        <div className="user-profile-wrapper">
+        <div className="user-profile-wrapper" ref={dropdownRef}>
           <div className="user-pill" onClick={() => setDropdownOpen(!dropdownOpen)}>
             <div className="user-avatar-container">
               {profileImage ? (
