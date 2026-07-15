@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { getRecipes, addRecipe, updateRecipe, deleteRecipe } from '../../services/api';
 import RecipeTable from '../recipes/RecipeTable';
@@ -32,18 +33,19 @@ const translateCuisine = (cuisine) => {
 
 export default function Recetas() {
   // Lista principal de recetas de la API
+  const [searchParams, setSearchParams] = useSearchParams();
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Filtros y Paginacion
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [cuisineFilter, setCuisineFilter] = useState('');
+  const page        = parseInt(searchParams.get('page'))    || 1;
+  const limit       = parseInt(searchParams.get('limit'))   || 10;
+  const searchQuery = searchParams.get('q')                 || '';
+  const cuisineFilter = searchParams.get('cuisine')         || '';
 
   // Busqueda temporal
-  const [tempSearch, setTempSearch] = useState('');
+  const [tempSearch, setTempSearch] = useState(searchQuery);
 
   // Lista de cocinas obtenidas de la API
   const [cuisines, setCuisines] = useState([]);
@@ -59,63 +61,6 @@ export default function Recetas() {
   const [formDifficulty, setFormDifficulty] = useState('Easy');
   const [formPrepTime, setFormPrepTime] = useState(15);
   const [formCookTime, setFormCookTime] = useState(15);
-
-  // Analizar los parámetros de URL al montar y la navegación popstate
-  useEffect(() => {
-    const parseUrlParams = () => {
-      const queryParams = new URLSearchParams(window.location.search);
-      const p = parseInt(queryParams.get('page')) || 1;
-      const l = parseInt(queryParams.get('limit')) || 10;
-      const q = queryParams.get('q') || '';
-      const c = queryParams.get('cuisine') || '';
-
-      setPage(p);
-      setLimit(l);
-      setSearchQuery(q);
-      setTempSearch(q);
-      setCuisineFilter(c);
-    };
-
-    parseUrlParams();
-    window.addEventListener('popstate', parseUrlParams);
-    return () => window.removeEventListener('popstate', parseUrlParams);
-  }, []);
-
-  // Actualizar parametros de URL cuando cambia el estado del filtro/paginacion
-  useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    let updated = false;
-
-    if (queryParams.get('page') !== String(page)) {
-      queryParams.set('page', page);
-      updated = true;
-    }
-    if (queryParams.get('limit') !== String(limit)) {
-      queryParams.set('limit', limit);
-      updated = true;
-    }
-    if ((queryParams.get('q') || '') !== searchQuery) {
-      if (searchQuery) {
-        queryParams.set('q', searchQuery);
-      } else {
-        queryParams.delete('q');
-      }
-      updated = true;
-    }
-    if ((queryParams.get('cuisine') || '') !== cuisineFilter) {
-      if (cuisineFilter) {
-        queryParams.set('cuisine', cuisineFilter);
-      } else {
-        queryParams.delete('cuisine');
-      }
-      updated = true;
-    }
-
-    if (updated) {
-      const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
-      window.history.pushState(null, '', newUrl);
-    }
-  }, [page, limit, searchQuery, cuisineFilter]);
 
   // Buscar recetas al iniciar
   const fetchRecipes = async () => {
@@ -139,6 +84,20 @@ export default function Recetas() {
     fetchRecipes();
   }, []);
 
+  useEffect(() => {
+    setTempSearch(searchQuery);
+  }, [searchQuery]);
+
+  const updateParams = (updates) => {
+    const next = { page, limit, searchQuery, cuisineFilter, ...updates };
+    const params = {};
+    if (next.page > 1)          params.page    = String(next.page);
+    if (next.limit !== 10)      params.limit   = String(next.limit);
+    if (next.searchQuery)       params.q       = next.searchQuery;
+    if (next.cuisineFilter)     params.cuisine = next.cuisineFilter;
+    setSearchParams(params, { replace: true });
+  };
+
   // Filtrar recetas localmente
   const filteredRecipes = recipes.filter(recipe => {
     const matchesSearch = recipe.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -151,10 +110,13 @@ export default function Recetas() {
   const totalPages = Math.ceil(totalRecipes / limit) || 1;
 
   useEffect(() => {
-    if (page > totalPages) {
-      setPage(totalPages);
+    if (!loading && page > totalPages && totalPages > 0) {
+      setSearchParams(prev => {
+        prev.set('page', String(totalPages));
+        return prev;
+      }, { replace: true });
     }
-  }, [totalPages, page]);
+  }, [page, totalPages, loading]);
 
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
@@ -163,22 +125,17 @@ export default function Recetas() {
   // Commit busqueda
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setSearchQuery(tempSearch);
-    setPage(1);
+    updateParams({ searchQuery: tempSearch, page: 1 });
   };
 
   // Filtro de cocina
   const handleCuisineChange = (e) => {
-    const value = e.target.value;
-    setCuisineFilter(value);
-    setPage(1);
+    updateParams({ cuisineFilter: e.target.value, page: 1 });
   };
 
   // Limite por pagina
   const handleLimitChange = (e) => {
-    const value = parseInt(e.target.value);
-    setLimit(value);
-    setPage(1);
+    updateParams({ limit: parseInt(e.target.value), page: 1 });
   };
 
   // Agregar Receta
@@ -449,7 +406,7 @@ export default function Recetas() {
             <li>
               <button
                 className={`page-btn ${page === 1 ? 'disabled' : ''}`}
-                onClick={() => page > 1 && setPage(page - 1)}
+                onClick={() => page > 1 && updateParams({ page: page - 1 })}
                 disabled={page === 1}
                 aria-label="Anterior"
               >
@@ -460,7 +417,7 @@ export default function Recetas() {
               <li key={pNum}>
                 <button
                   className={`page-btn ${page === pNum ? 'active' : ''}`}
-                  onClick={() => setPage(pNum)}
+                  onClick={() => updateParams({ page: pNum })}
                 >
                   {pNum}
                 </button>
@@ -469,7 +426,7 @@ export default function Recetas() {
             <li>
               <button
                 className={`page-btn ${page === totalPages ? 'disabled' : ''}`}
-                onClick={() => page < totalPages && setPage(page + 1)}
+                onClick={() => page < totalPages && updateParams({ page: page + 1 })}
                 disabled={page === totalPages}
                 aria-label="Siguiente"
               >

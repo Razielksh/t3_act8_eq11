@@ -1,19 +1,19 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
 
-// Import SVG assets
 import chevronLeftIcon from '../assets/chevron-left.svg';
 import homeIcon from '../assets/home.svg';
 import bookOpenIcon from '../assets/book-open.svg';
 
-export default function Sidebar({ currentPage, onPageChange, collapsed, onToggle }) {
+export default function Sidebar({ collapsed, onToggle }) {
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-top">
         <button className="back-btn" onClick={onToggle} aria-label="Ocultar/Mostrar menú lateral">
-          <img 
-            src={chevronLeftIcon} 
-            alt="Colapsar" 
+          <img
+            src={chevronLeftIcon}
+            alt="Colapsar"
             className="sidebar-icon toggle-icon"
             style={{ width: '24px', height: '24px' }}
           />
@@ -23,38 +23,45 @@ export default function Sidebar({ currentPage, onPageChange, collapsed, onToggle
       <nav className="sidebar-menu">
         <ul>
           <li>
-            <button 
-              onClick={() => onPageChange('inicio')} 
-              className={`menu-item ${currentPage === 'inicio' ? 'active' : ''}`}
-              style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
             >
-              <span className="menu-icon">
-                <img 
-                  src={homeIcon} 
-                  alt="Inicio" 
-                  className={`sidebar-icon ${currentPage === 'inicio' ? 'active-icon' : 'inactive-icon'}`}
-                  style={{ width: '20px', height: '20px' }}
-                />
-              </span>
-              <span className="menu-text">Inicio</span>
-            </button>
+              {({ isActive }) => (
+                <>
+                  <span className="menu-icon">
+                    <img
+                      src={homeIcon}
+                      alt="Inicio"
+                      className={`sidebar-icon ${isActive ? 'active-icon' : 'inactive-icon'}`}
+                      style={{ width: '20px', height: '20px' }}
+                    />
+                  </span>
+                  <span className="menu-text">Inicio</span>
+                </>
+              )}
+            </NavLink>
           </li>
           <li>
-            <button 
-              onClick={() => onPageChange('recetas')} 
-              className={`menu-item ${currentPage === 'recetas' ? 'active' : ''}`}
-              style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
+            <NavLink
+              to="/recetas"
+              className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
             >
-              <span className="menu-icon">
-                <img 
-                  src={bookOpenIcon} 
-                  alt="Recetas" 
-                  className={`sidebar-icon ${currentPage === 'recetas' ? 'active-icon' : 'inactive-icon'}`}
-                  style={{ width: '20px', height: '20px' }}
-                />
-              </span>
-              <span className="menu-text">Recetas</span>
-            </button>
+              {({ isActive }) => (
+                <>
+                  <span className="menu-icon">
+                    <img
+                      src={bookOpenIcon}
+                      alt="Recetas"
+                      className={`sidebar-icon ${isActive ? 'active-icon' : 'inactive-icon'}`}
+                      style={{ width: '20px', height: '20px' }}
+                    />
+                  </span>
+                  <span className="menu-text">Recetas</span>
+                </>
+              )}
+            </NavLink>
           </li>
         </ul>
       </nav>

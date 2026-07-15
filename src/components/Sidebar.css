@@ -9,8 +9,6 @@
   box-sizing: border-box;
   font-family: system-ui, -apple-system, sans-serif;
   flex-shrink: 0;
-  position: sticky;
-  top: 0;
   transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
   overflow: hidden;
 }
